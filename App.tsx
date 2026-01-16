@@ -6,6 +6,7 @@
  */
 
 import { Text, View } from 'react-native';
+import Entypo from "react-native-vector-icons/Entypo"
 
 // import { NewAppScreen } from '@react-native/new-app-screen';
 // import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
@@ -60,6 +61,9 @@ const App = () => {
       >
         Deepanshu
       </Text>
+      <View>
+        <Entypo name='bowl' color={'black'} size={50}/>
+      </View>
     </View>
   );
 };
