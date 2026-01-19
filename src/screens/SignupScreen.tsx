@@ -33,16 +33,11 @@ const SignupScreen = () => {
 
     try {
       setLoading(true);
-
       await axios.post('http://192.168.1.9:5000/api/auth/signup', user);
 
       Alert.alert('success', 'Signup successful');
       const email = user.email;
       setUser({ fullname: '', email: '', password: '' });
-      // navigation.navigate({
-      //   pathname: '/verification',
-      //   params: { email: user.email },
-      // });
       navigation.navigate('Verification', {
         email,
       });
