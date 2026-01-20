@@ -5,6 +5,7 @@ import IntroScreen from '../screens/IntroScreen';
 import SignupScreen from '../screens/SignupScreen';
 import SigninScreen from '../screens/SigninScreen';
 import VerificationScreen from '../screens/VerificationScreen';
+import MainScreen from '../screens/MainScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,7 @@ const RootNavigator = () => {
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="Signin" component={SigninScreen} />
         <Stack.Screen name="Verification" component={VerificationScreen} />
+        <Stack.Screen name="Main" component={MainScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

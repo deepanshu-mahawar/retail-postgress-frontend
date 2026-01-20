@@ -17,7 +17,7 @@ const SignupScreen = () => {
   const navigation = useNavigation<any>();
 
   const [user, setUser] = useState({
-    fullname: '',
+    username: '',
     email: '',
     password: '',
   });
@@ -26,7 +26,7 @@ const SignupScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const onSignup = async () => {
-    if (!user.fullname || !user.email || !user.password) {
+    if (!user.username || !user.email || !user.password) {
       Alert.alert('Error', 'All fields are required');
       return;
     }
@@ -37,7 +37,7 @@ const SignupScreen = () => {
 
       Alert.alert('success', 'Signup successful');
       const email = user.email;
-      setUser({ fullname: '', email: '', password: '' });
+      setUser({ username: '', email: '', password: '' });
       navigation.navigate('Verification', {
         email,
       });
@@ -68,8 +68,8 @@ const SignupScreen = () => {
             style={styles.input}
             placeholder="e.g. Alex Morgan"
             placeholderTextColor="#00000061"
-            value={user.fullname}
-            onChangeText={text => setUser({ ...user, fullname: text })}
+            value={user.username}
+            onChangeText={text => setUser({ ...user, username: text })}
           />
         </View>
       </View>

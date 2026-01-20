@@ -39,7 +39,7 @@ const SigninScreen = () => {
 
       Alert.alert('success', 'Signin successful');
       setUser({ email: '', password: '' });
-      // router.push('/main');
+      navigation.navigate('Main');
     } catch (error) {
       Alert.alert('Error', 'Signup failed');
       console.error(error);
