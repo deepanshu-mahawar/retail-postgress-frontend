@@ -35,11 +35,15 @@ const SigninScreen = () => {
     try {
       setLoading(true);
 
-      await axios.post('http://192.168.1.9:5000/api/auth/signin', user);
+      const response = await axios.post(
+        'http://192.168.1.9:5000/api/auth/signin',
+        user,
+      );
 
       Alert.alert('success', 'Signin successful');
       setUser({ email: '', password: '' });
-      navigation.navigate('Main');
+      navigation.navigate('Main', { token: response?.data?.token });
+      console.log("Response", response.data)
     } catch (error) {
       Alert.alert('Error', 'Signup failed');
       console.error(error);

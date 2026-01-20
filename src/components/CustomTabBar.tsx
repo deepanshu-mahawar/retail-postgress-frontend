@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    height: 100,
+    height: 96,
     shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowRadius: 10,
@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+    top: -4
   },
   label: {
     fontSize: 12,
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
   centerButton: {
     position: 'absolute',
     right: 20,
-    bottom: Platform.OS === 'ios' ? 25 : 120,
+    bottom: Platform.OS === 'ios' ? 110 : 116,
     alignSelf: 'center',
     backgroundColor: '#ff5b27',
     width: 64,
