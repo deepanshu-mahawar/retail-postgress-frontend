@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  //   Alert,
 } from 'react-native';
 
 import axios from 'axios';
@@ -14,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import saveToken from '../utils/saveToken';
 
 const SigninScreen = () => {
   const navigation = useNavigation<any>();
@@ -40,10 +40,13 @@ const SigninScreen = () => {
         user,
       );
 
+      if (response.data.token) {
+        await saveToken(response.data.token);
+      }
+
       Alert.alert('success', 'Signin successful');
       setUser({ email: '', password: '' });
-      navigation.navigate('Main', { token: response?.data?.token });
-      console.log("Response", response.data)
+      navigation.navigate('Main');
     } catch (error) {
       Alert.alert('Error', 'Signup failed');
       console.error(error);
