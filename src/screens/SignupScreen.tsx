@@ -33,7 +33,7 @@ const SignupScreen = () => {
 
     try {
       setLoading(true);
-      await axios.post('http://192.168.1.9:5000/api/auth/signup', user);
+      await axios.post('http://192.168.1.3:5000/api/auth/signup', user);
 
       Alert.alert('success', 'Signup successful');
       const email = user.email;
