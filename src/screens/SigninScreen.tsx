@@ -63,7 +63,7 @@ const SigninScreen = () => {
 
       <Text style={styles.title}>Welcome Back</Text>
       <Text style={styles.subtitle}>
-        Sign in to continue managing your retail business
+        Sign in to continue managing your retail business.
       </Text>
 
       <View style={styles.inputContainer}>

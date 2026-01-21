@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import {
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -12,6 +13,21 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { Image } from 'react-native';
+
+const categories = [
+  { label: 'Select category', value: '' },
+  { label: 'Grocery', value: 'grocery' },
+  { label: 'Fresh Items', value: 'fresh' },
+  { label: 'Personalcare', value: 'personal' },
+  { label: 'Household', value: 'home' },
+  { label: 'Babycare', value: 'baby' },
+  { label: 'Healthcare', value: 'health' },
+  { label: 'Fashion', value: 'fashion' },
+  { label: 'Electronic', value: 'electronic' },
+  { label: 'Stationery', value: 'stationery' },
+];
 
 const Product = () => {
   const navigation = useNavigation<any>();
@@ -22,11 +38,30 @@ const Product = () => {
     stock: '',
     category: '',
     description: '',
-    image: '',
+    image: null as any,
   });
 
+  const pickImage = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        quality: 0.8,
+      },
+      response => {
+        if (!response.didCancel && response.assets?.length) {
+          setProduct({
+            ...product,
+            image: response.assets[0],
+          });
+        }
+      },
+    );
+  };
+
+
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Icon name="arrow-back-ios" size={20} color="#000000a3" />
       </TouchableOpacity>
@@ -34,13 +69,22 @@ const Product = () => {
       <Text style={styles.title}>Create Product</Text>
       <Text style={styles.subtitle}>Add product details to start selling.</Text>
 
-      <View style={styles.card}>
-        <Ionicons name="camera-outline" size={40} color="#ff5b27" />
-        <Text style={styles.cardTitle}>Open Camera</Text>
-        <Text style={styles.cardText}>
-          Use your camera to scan a barcode, label, or product text.
-        </Text>
-      </View>
+      <TouchableOpacity style={styles.card} onPress={pickImage}>
+        {product.image ? (
+          <Image
+            source={{ uri: product.image.uri }}
+            style={styles.previewImage}
+          />
+        ) : (
+          <>
+            <Ionicons name="camera-outline" size={40} color="#ff5b27" />
+            <Text style={styles.cardTitle}>Upload Product Image</Text>
+            <Text style={styles.cardText}>
+              Tap to select an image from gallery
+            </Text>
+          </>
+        )}
+      </TouchableOpacity>
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Name</Text>
@@ -90,22 +134,50 @@ const Product = () => {
             placeholder="20"
             placeholderTextColor="#00000061"
             autoCapitalize="none"
-            value={product.price}
-            onChangeText={number => setProduct({ ...product, price: number })}
+            value={product.stock}
+            onChangeText={number => setProduct({ ...product, stock: number })}
           />
         </View>
       </View>
 
       <View style={styles.inputContainer}>
+        <Text style={styles.label}>Category</Text>
+
+        <View style={styles.categoryRow}>
+          {categories.slice(1).map(item => (
+            <TouchableOpacity
+              key={item.value}
+              style={[
+                styles.categoryChip,
+                product.category === item.value && styles.categoryChipActive,
+              ]}
+              onPress={() => setProduct({ ...product, category: item.value })}
+            >
+              <Text
+                style={[
+                  styles.categoryText,
+                  product.category === item.value && styles.categoryTextActive,
+                ]}
+              >
+                {item.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.inputContainer}>
         <Text style={styles.label}>Description</Text>
-        <View style={styles.inputWrapper}>
+        <View style={[styles.inputWrapper, styles.textAreaWrapper]}>
           <TextInput
-            style={styles.input}
-            placeholder="20"
+            style={styles.textArea}
+            placeholder="Write product description..."
             placeholderTextColor="#00000061"
-            autoCapitalize="none"
-            value={product.price}
-            onChangeText={number => setProduct({ ...product, price: number })}
+            multiline
+            numberOfLines={4}
+            textAlignVertical="top"
+            value={product.description}
+            onChangeText={text => setProduct({ ...product, description: text })}
           />
         </View>
       </View>
@@ -113,7 +185,9 @@ const Product = () => {
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Create Product</Text>
       </TouchableOpacity>
-    </View>
+
+      <View style={styles.screenView}/>
+    </ScrollView>
   );
 };
 
@@ -123,7 +197,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 60,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     backgroundColor: '#FFF5F0',
   },
   title: {
@@ -137,7 +211,7 @@ const styles = StyleSheet.create({
     color: '#000000a3',
     lineHeight: 20,
     marginTop: -6,
-    marginBottom: 40,
+    marginBottom: 20,
     fontFamily: 'Poppins-Regular',
   },
   inputContainer: {
@@ -173,7 +247,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 70,
     marginBottom: 30,
   },
   buttonText: {
@@ -212,9 +285,9 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#fff',
-    marginHorizontal: 16,
     marginTop: 16,
-    padding: 20,
+    marginBottom: 16,
+    padding: 10,
     borderRadius: 14,
     alignItems: 'center',
     borderWidth: 1,
@@ -241,5 +314,52 @@ const styles = StyleSheet.create({
   primaryBtnText: {
     color: '#fff',
     fontFamily: 'Poppins-SemiBold',
+  },
+  previewImage: {
+    width: '100%',
+    height: 120,
+    borderRadius: 12,
+  },
+
+  textAreaWrapper: {
+    height: 120,
+    alignItems: 'flex-start',
+  },
+
+  textArea: {
+    flex: 1,
+    fontSize: 16,
+    fontFamily: 'Poppins-Regular',
+  },
+  categoryRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+
+  categoryChip: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#00000061',
+  },
+
+  categoryChipActive: {
+    backgroundColor: '#ff5b27',
+    borderColor: '#ff5b27',
+  },
+
+  categoryText: {
+    fontSize: 13,
+    fontFamily: 'Poppins-Medium',
+    color: '#000',
+  },
+
+  categoryTextActive: {
+    color: '#fff',
+  },
+  screenView: {
+    height: 160,
   },
 });
