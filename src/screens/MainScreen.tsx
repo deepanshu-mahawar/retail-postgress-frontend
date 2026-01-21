@@ -1,8 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { User } from '../types/type';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/FontAwesome6';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 
 const MainScreen = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -11,7 +22,7 @@ const MainScreen = () => {
       const token = await AsyncStorage.getItem('authToken');
       try {
         const response = await axios.get(
-          'http://192.168.1.9:5000/api/auth/profile',
+          'http://192.168.1.3:5000/api/auth/profile',
           {
             headers: { Authorization: `Bearer ${token}` },
           },
@@ -26,12 +37,364 @@ const MainScreen = () => {
   }, []);
 
   return (
-    <View>
-      <Text>{user?.id}</Text>
-      <Text>{user?.email}</Text>
-      <Text>{user?.username}</Text>
-    </View>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <SafeAreaView style={styles.header}>
+        <View style={styles.brandRow}>
+          <Icon name="cart-shopping" color={'black'} size={24} />
+
+          <Text style={styles.headerTitle}>Retail Pro</Text>
+        </View>
+
+        <View style={styles.headerRight}>
+          <Icon name="bell" size={22} color="#000000" />
+          <Image
+            source={{ uri: 'https://i.pravatar.cc/150' }}
+            style={styles.avatar}
+          />
+        </View>
+      </SafeAreaView>
+
+      <View style={styles.greeting}>
+        <Text style={styles.greetingTitle}>Good morning, {user?.username}</Text>
+        <Text style={styles.greetingSub}>
+          Here is today’s snapshot of your store performance.
+        </Text>
+      </View>
+
+      <View style={styles.statsRow}>
+        <View style={styles.statCard}>
+          <Text style={styles.statLabel}>Today’s sales</Text>
+          <Text style={styles.statValue}>$2,430</Text>
+          <View style={styles.statBadge}>
+            <Text style={styles.statBadgeText}>+18% vs yesterday</Text>
+          </View>
+        </View>
+
+        <View style={styles.statCard}>
+          <Text style={styles.statLabel}>Low stock items</Text>
+          <Text style={styles.statValue}>7</Text>
+          <TouchableOpacity>
+            <Text style={styles.reviewText}>Review now</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Quick actions</Text>
+        <View style={styles.quickRow}>
+          <TouchableOpacity style={styles.primaryAction}>
+            <Ionicons name="add" size={18} color="#fff" />
+            <Text style={styles.primaryActionText}>New product</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.secondaryAction}>
+            <Ionicons name="scan-outline" size={18} color="#ff5b27" />
+            <Text style={styles.secondaryActionText}>Scan barcode</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.sectionRow}>
+        <Text style={styles.sectionTitle}>Top products</Text>
+        <Text style={styles.link}>View all</Text>
+      </View>
+
+      {[
+        {
+          name: 'Classic cotton t-shirt',
+          sku: 'SKU 1042',
+          tag: 'Best seller',
+          stock: 84,
+        },
+        {
+          name: 'Leather shoulder bag',
+          sku: 'SKU 2087',
+          tag: 'High margin',
+          stock: 32,
+        },
+        {
+          name: 'Stainless steel watch',
+          sku: 'SKU 3094',
+          tag: 'Low stock',
+          stock: 12,
+        },
+      ].map((item, index) => (
+        <View key={index} style={styles.productRow}>
+          <Ionicons name="cube-outline" size={26} color="#ff5b27" />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.productName}>{item.name}</Text>
+            <Text style={styles.productMeta}>
+              {item.sku} · {item.tag}
+            </Text>
+          </View>
+          <Text style={styles.stockText}>{item.stock} in stock</Text>
+        </View>
+      ))}
+
+      <View style={styles.sectionRow}>
+        <Text style={styles.sectionTitle}>Today’s activity</Text>
+        <Text style={styles.link}>See all</Text>
+      </View>
+
+      <View style={styles.activityCard}>
+        <Ionicons
+          name="cart-outline"
+          color={'#ff5b27'}
+          size={18}
+        />
+        <Text style={styles.activityText}>12 orders completed</Text>
+        <Text style={styles.activityValue}>$640</Text>
+      </View>
+
+      <View style={styles.activityCard}>
+        <Ionicons name="warning-outline" color={'#ff5b27'} size={18} />
+        <Text style={styles.activityText}>3 items low in stock</Text>
+        <Text style={styles.review}>Review</Text>
+      </View>
+
+      <View style={{ height: 160 }} />
+    </ScrollView>
   );
 };
 
 export default MainScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF5F0',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginTop: 14,
+  },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+
+  logo: {
+    width: 60,
+    height: 60,
+  },
+
+  headerTitle: {
+    fontSize: 18,
+    color: '#000000',
+    fontFamily: 'Poppins-SemiBold',
+  },
+
+  headerRight: {
+    flexDirection: 'row',
+    gap: 14,
+    alignItems: 'center',
+  },
+
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  },
+
+  greeting: {
+    paddingHorizontal: 16,
+    marginTop: 12,
+  },
+
+  greetingTitle: {
+    fontSize: 22,
+    color: '#000000',
+    fontFamily: 'Poppins-SemiBold',
+  },
+
+  greetingSub: {
+    marginTop: -4,
+    color: '#000000a3',
+    fontSize: 13,
+    fontFamily: 'Poppins-Regular',
+  },
+
+  statsRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    marginTop: 26,
+    gap: 16,
+  },
+
+  statCard: {
+    flex: 1,
+    justifyContent: 'space-between',
+    backgroundColor: '#ffffff',
+    borderColor: '#ffe3d9',
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 16,
+  },
+
+  statLabel: {
+    color: '#000000a3',
+    fontSize: 12,
+    fontFamily: 'Poppins-SemiBold',
+  },
+
+  statValue: {
+    fontSize: 22,
+    fontFamily: 'Poppins-SemiBold',
+    marginTop: 6,
+  },
+
+  statBadge: {
+    marginTop: 6,
+    backgroundColor: '#DCFCE7',
+    alignSelf: 'flex-start',
+    borderRadius: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+
+  statBadgeText: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 11,
+    color: '#166534',
+    fontWeight: '600',
+  },
+
+  reviewText: {
+    color: '#ff5b27',
+    fontWeight: '600',
+    fontSize: 12,
+  },
+
+  sectionTitle: {
+    marginTop: 22,
+    marginBottom: 10,
+    fontSize: 16,
+    color: '#000000',
+    fontFamily: 'Poppins-SemiBold',
+  },
+
+  quickRow: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+
+  primaryAction: {
+    flex: 1,
+    backgroundColor: '#ff5927',
+    borderRadius: 10,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+  },
+
+  primaryActionText: {
+    fontFamily: 'Poppins-SemiBold',
+    color: '#ffffff',
+  },
+
+  secondaryAction: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ffe3d9',
+    borderRadius: 14,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#fff',
+  },
+
+  secondaryActionText: {
+    color: '#ff5b27',
+    fontFamily: 'Poppins-SemiBold',
+  },
+
+  sectionHeader: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    marginTop: 0,
+  },
+
+  link: {
+    color: '#ff5b27',
+    fontFamily: 'Poppins-SemiBold',
+  },
+
+  productRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    marginHorizontal: 16,
+    marginTop: 10,
+    padding: 14,
+    borderRadius: 10,
+    gap: 12,
+    borderColor: '#ffe3d9',
+    borderWidth: 1,
+  },
+
+  productName: {
+    color: '#000000',
+    fontFamily: 'Poppins-SemiBold',
+  },
+
+  productMeta: {
+    fontSize: 12,
+    color: '#000000a3',
+    marginTop: 2,
+    fontFamily: 'Poppins-SemiBold',
+  },
+
+  stockText: {
+    fontSize: 12,
+    fontFamily: 'Poppins-SemiBold',
+    color: '#000000a3',
+  },
+
+  activityCard: {
+    backgroundColor: '#fff',
+    marginHorizontal: 16,
+    marginTop: 10,
+    padding: 14,
+    borderRadius: 10,
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'center',
+    position: 'relative',
+    borderColor: '#ffe3d9',
+    borderWidth: 1,
+  },
+
+  activityText: {
+    color: '#111827',
+    fontFamily: 'Poppins-SemiBold',
+  },
+
+  activityValue: {
+    fontFamily: 'Poppins-SemiBold',
+    position: 'absolute',
+    right: 14,
+  },
+
+  sectionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginTop: 22,
+  },
+
+  review: {
+    position: 'absolute',
+    right: 14,
+    color: '#ff5b27',
+    fontWeight: '600',
+    fontSize: 12,
+  },
+});
