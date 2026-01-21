@@ -7,6 +7,7 @@ import SigninScreen from '../screens/SigninScreen';
 import VerificationScreen from '../screens/VerificationScreen';
 
 import BottomTabNavigator from './BottomTabNavigator';
+import AddProductScreen from '../screens/AddProductScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ const RootNavigator = () => {
         <Stack.Screen name="Signin" component={SigninScreen} />
         <Stack.Screen name="Verification" component={VerificationScreen} />
         <Stack.Screen name="Main" component={BottomTabNavigator} />
+        <Stack.Screen name="AddProduct" component={AddProductScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

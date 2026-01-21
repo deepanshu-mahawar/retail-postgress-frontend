@@ -9,14 +9,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { User } from '../types/type';
+import { Product, User } from '../types/type';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import { useNavigation } from '@react-navigation/native';
 
 const MainScreen = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [products, setProducts] = useState<Product[] | null>(null);
+
+  const navigation = useNavigation<any>();
+
   useEffect(() => {
     const getProfile = async () => {
       const token = await AsyncStorage.getItem('authToken');
@@ -33,7 +37,25 @@ const MainScreen = () => {
       }
     };
 
+    const getProducts = async () => {
+      const token = await AsyncStorage.getItem('authToken');
+      try {
+        const response = await axios.get(
+          'http://192.168.1.3:5000/api/product/get-products',
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+
+        setProducts(response.data.data);
+        console.log('response', response.data.data);
+      } catch (error) {
+        console.log('Fetch products failed', error);
+      }
+    };
+
     getProfile();
+    getProducts();
   }, []);
 
   return (
@@ -41,7 +63,6 @@ const MainScreen = () => {
       <SafeAreaView style={styles.header}>
         <View style={styles.brandRow}>
           <Icon name="cart-shopping" color={'black'} size={24} />
-
           <Text style={styles.headerTitle}>Retail Pro</Text>
         </View>
 
@@ -82,7 +103,10 @@ const MainScreen = () => {
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Quick actions</Text>
         <View style={styles.quickRow}>
-          <TouchableOpacity style={styles.primaryAction}>
+          <TouchableOpacity
+            style={styles.primaryAction}
+            onPress={() => navigation.navigate('AddProduct')}
+          >
             <Ionicons name="add" size={18} color="#fff" />
             <Text style={styles.primaryActionText}>New product</Text>
           </TouchableOpacity>
@@ -99,35 +123,65 @@ const MainScreen = () => {
         <Text style={styles.link}>View all</Text>
       </View>
 
-      {[
-        {
-          name: 'Classic cotton t-shirt',
-          sku: 'SKU 1042',
-          tag: 'Best seller',
-          stock: 84,
-        },
-        {
-          name: 'Leather shoulder bag',
-          sku: 'SKU 2087',
-          tag: 'High margin',
-          stock: 32,
-        },
-        {
-          name: 'Stainless steel watch',
-          sku: 'SKU 3094',
-          tag: 'Low stock',
-          stock: 12,
-        },
-      ].map((item, index) => (
-        <View key={index} style={styles.productRow}>
-          <Ionicons name="cube-outline" size={26} color="#ff5b27" />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.productName}>{item.name}</Text>
+      {products?.map(product => (
+        <View key={product?.id} style={styles.productRow}>
+          {product.category === 'grocery' ? (
+            <Image
+              source={require('../assets/icons/grocery.png')}
+              style={styles.categoryImage}
+            />
+          ) : product.category === 'fresh' ? (
+            <Image
+              source={require('../assets/icons/fresh-produce.png')}
+              style={styles.categoryImage}
+            />
+          ) : product.category === 'personal' ? (
+            <Image
+              source={require('../assets/icons/personal-hygiene.png')}
+              style={styles.categoryImage}
+            />
+          ) : product.category === 'home' ? (
+            <Image
+              source={require('../assets/icons/home.png')}
+              style={styles.categoryImage}
+            />
+          ) : product.category === 'baby' ? (
+            <Image
+              source={require('../assets/icons/baby.png')}
+              style={styles.categoryImage}
+            />
+          ) : product.category === 'health' ? (
+            <Image
+              source={require('../assets/icons/healthcare.png')}
+              style={styles.categoryImage}
+            />
+          ) : product.category === 'fashion' ? (
+            <Image
+              source={require('../assets/icons/tshirt.png')}
+              style={styles.categoryImage}
+            />
+          ) : product.category === 'electronic' ? (
+            <Image
+              source={require('../assets/icons/responsive.png')}
+              style={styles.categoryImage}
+            />
+          ) : product.category === 'stationery' ? (
+            <Image
+              source={require('../assets/icons/stationery.png')}
+              style={styles.categoryImage}
+            />
+          ) : (
+            <Ionicons name="cube-outline" size={26} color={'#ff5b27'} />
+          )}
+
+          <View style={styles.productCard}>
+            <Text style={styles.productName}>{product.name}</Text>
             <Text style={styles.productMeta}>
-              {item.sku} · {item.tag}
+              {product.stock} · {product.category}
             </Text>
           </View>
-          <Text style={styles.stockText}>{item.stock} in stock</Text>
+
+          <Text style={styles.stockText}>{product.stock} in stock</Text>
         </View>
       ))}
 
@@ -137,11 +191,7 @@ const MainScreen = () => {
       </View>
 
       <View style={styles.activityCard}>
-        <Ionicons
-          name="cart-outline"
-          color={'#ff5b27'}
-          size={18}
-        />
+        <Ionicons name="cart-outline" color={'#ff5b27'} size={18} />
         <Text style={styles.activityText}>12 orders completed</Text>
         <Text style={styles.activityValue}>$640</Text>
       </View>
@@ -152,7 +202,7 @@ const MainScreen = () => {
         <Text style={styles.review}>Review</Text>
       </View>
 
-      <View style={{ height: 160 }} />
+      <View style={styles.screenView} />
     </ScrollView>
   );
 };
@@ -176,55 +226,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-
-  logo: {
-    width: 60,
-    height: 60,
-  },
-
   headerTitle: {
     fontSize: 18,
     color: '#000000',
     fontFamily: 'Poppins-SemiBold',
   },
-
   headerRight: {
     flexDirection: 'row',
     gap: 14,
     alignItems: 'center',
   },
-
   avatar: {
     width: 32,
     height: 32,
     borderRadius: 16,
   },
-
   greeting: {
     paddingHorizontal: 16,
     marginTop: 12,
   },
-
   greetingTitle: {
     fontSize: 22,
     color: '#000000',
     fontFamily: 'Poppins-SemiBold',
   },
-
   greetingSub: {
     marginTop: -4,
     color: '#000000a3',
     fontSize: 13,
     fontFamily: 'Poppins-Regular',
   },
-
   statsRow: {
     flexDirection: 'row',
     paddingHorizontal: 16,
     marginTop: 26,
     gap: 16,
   },
-
   statCard: {
     flex: 1,
     justifyContent: 'space-between',
@@ -234,19 +271,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
   },
-
   statLabel: {
     color: '#000000a3',
     fontSize: 12,
     fontFamily: 'Poppins-SemiBold',
   },
-
   statValue: {
     fontSize: 22,
     fontFamily: 'Poppins-SemiBold',
     marginTop: 6,
   },
-
   statBadge: {
     marginTop: 6,
     backgroundColor: '#DCFCE7',
@@ -255,20 +289,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
-
   statBadgeText: {
     fontFamily: 'Poppins-SemiBold',
     fontSize: 11,
     color: '#166534',
-    fontWeight: '600',
   },
-
   reviewText: {
     color: '#ff5b27',
     fontWeight: '600',
     fontSize: 12,
   },
-
   sectionTitle: {
     marginTop: 22,
     marginBottom: 10,
@@ -276,12 +306,10 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontFamily: 'Poppins-SemiBold',
   },
-
   quickRow: {
     flexDirection: 'row',
     gap: 16,
   },
-
   primaryAction: {
     flex: 1,
     backgroundColor: '#ff5927',
@@ -291,12 +319,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
   },
-
   primaryActionText: {
     fontFamily: 'Poppins-SemiBold',
     color: '#ffffff',
   },
-
   secondaryAction: {
     flex: 1,
     borderWidth: 1,
@@ -308,24 +334,17 @@ const styles = StyleSheet.create({
     gap: 8,
     backgroundColor: '#fff',
   },
-
   secondaryActionText: {
     color: '#ff5b27',
     fontFamily: 'Poppins-SemiBold',
   },
-
   sectionHeader: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
     paddingHorizontal: 16,
-    marginTop: 0,
   },
-
   link: {
     color: '#ff5b27',
     fontFamily: 'Poppins-SemiBold',
   },
-
   productRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -338,25 +357,21 @@ const styles = StyleSheet.create({
     borderColor: '#ffe3d9',
     borderWidth: 1,
   },
-
   productName: {
     color: '#000000',
     fontFamily: 'Poppins-SemiBold',
   },
-
   productMeta: {
     fontSize: 12,
     color: '#000000a3',
     marginTop: 2,
     fontFamily: 'Poppins-SemiBold',
   },
-
   stockText: {
     fontSize: 12,
     fontFamily: 'Poppins-SemiBold',
     color: '#000000a3',
   },
-
   activityCard: {
     backgroundColor: '#fff',
     marginHorizontal: 16,
@@ -370,18 +385,15 @@ const styles = StyleSheet.create({
     borderColor: '#ffe3d9',
     borderWidth: 1,
   },
-
   activityText: {
     color: '#111827',
     fontFamily: 'Poppins-SemiBold',
   },
-
   activityValue: {
     fontFamily: 'Poppins-SemiBold',
     position: 'absolute',
     right: 14,
   },
-
   sectionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -389,12 +401,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginTop: 22,
   },
-
   review: {
     position: 'absolute',
     right: 14,
     color: '#ff5b27',
     fontWeight: '600',
     fontSize: 12,
+  },
+  screenView: {
+    height: 160,
+  },
+  productCard: {
+    flex: 1,
+  },
+  categoryImage: {
+    width: 30,
+    height: 30,
   },
 });
