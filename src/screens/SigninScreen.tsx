@@ -182,6 +182,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontFamily: 'Poppins-Regular',
+    color: "#000000"
   },
   button: {
     height: 50,

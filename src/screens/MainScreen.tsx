@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   Image,
   ScrollView,
+  // StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -60,6 +61,7 @@ const MainScreen = () => {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* <StatusBar backgroundColor={'#FFF5F0'} barStyle="dark-content" /> */}
       <SafeAreaView style={styles.header}>
         <View style={styles.brandRow}>
           <Icon name="cart-shopping" color={'black'} size={24} />
@@ -68,10 +70,12 @@ const MainScreen = () => {
 
         <View style={styles.headerRight}>
           <Icon name="bell" size={22} color="#000000" />
-          <Image
-            source={{ uri: 'https://i.pravatar.cc/150' }}
-            style={styles.avatar}
-          />
+
+          <View style={styles.profile}>
+            <Text style={styles.profileText}>
+              {user?.username?.charAt(0).toUpperCase()}
+            </Text>
+          </View>
         </View>
       </SafeAreaView>
 
@@ -105,7 +109,7 @@ const MainScreen = () => {
         <View style={styles.quickRow}>
           <TouchableOpacity
             style={styles.primaryAction}
-            onPress={() => navigation.navigate('AddProduct')}
+            onPress={() => navigation.navigate('Product')}
           >
             <Ionicons name="add" size={18} color="#fff" />
             <Text style={styles.primaryActionText}>New product</Text>
@@ -191,13 +195,13 @@ const MainScreen = () => {
       </View>
 
       <View style={styles.activityCard}>
-        <Ionicons name="cart-outline" color={'#ff5b27'} size={18} />
+        <Ionicons name="cart-outline" color={'#ff5b27'} size={24} />
         <Text style={styles.activityText}>12 orders completed</Text>
         <Text style={styles.activityValue}>$640</Text>
       </View>
 
       <View style={styles.activityCard}>
-        <Ionicons name="warning-outline" color={'#ff5b27'} size={18} />
+        <Ionicons name="warning-outline" color={'#ff5b27'} size={24} />
         <Text style={styles.activityText}>3 items low in stock</Text>
         <Text style={styles.review}>Review</Text>
       </View>
@@ -273,7 +277,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     color: '#000000a3',
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: 'Poppins-SemiBold',
   },
   statValue: {
@@ -298,6 +302,7 @@ const styles = StyleSheet.create({
     color: '#ff5b27',
     fontWeight: '600',
     fontSize: 12,
+    fontFamily: 'Poppins-SemiBold',
   },
   sectionTitle: {
     marginTop: 22,
@@ -399,14 +404,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    marginTop: 22,
   },
   review: {
     position: 'absolute',
     right: 14,
     color: '#ff5b27',
-    fontWeight: '600',
     fontSize: 12,
+    fontFamily: 'Poppins-SemiBold',
   },
   screenView: {
     height: 160,
@@ -415,7 +419,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   categoryImage: {
-    width: 30,
-    height: 30,
+    width: 24,
+    height: 24,
+  },
+  profile: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#ff5b27',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#ff5b27',
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 12,
+  },
+  profileText: {
+    fontSize: 16,
+    fontFamily: 'Poppins_Regular',
+    color: '#ffffff',
   },
 });
