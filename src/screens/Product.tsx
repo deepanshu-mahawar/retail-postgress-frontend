@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,6 +16,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const categories = [
   { label: 'Select category', value: '' },
@@ -58,7 +61,41 @@ const Product = () => {
     );
   };
 
+  const createProduct = async () => {
+    const formData = new FormData();
 
+    formData.append('name', product.name);
+    formData.append('price', product.price);
+    formData.append('stock', product.stock);
+    formData.append('category', product.category);
+    formData.append('description', product.description);
+    formData.append('image', {
+      uri: product.image.uri,
+      type: product.image.type || 'image/jpeg',
+      name: product.image.fileName || 'product.jpg',
+    } as any);
+
+
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+
+      await axios.post(
+        'http://192.168.1.3:5000/api/product/add-products',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+      console.log('Product created successfully');
+      Alert.alert('Success', 'Product created successfully');
+      navigation.navigate('Inventory');
+    } catch (error) {
+      console.error('Product creation failed', error);
+    }
+  };
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -182,11 +219,11 @@ const Product = () => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={createProduct}>
         <Text style={styles.buttonText}>Create Product</Text>
       </TouchableOpacity>
 
-      <View style={styles.screenView}/>
+      <View style={styles.screenView} />
     </ScrollView>
   );
 };
