@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View,
   Text,
@@ -13,10 +13,12 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import saveToken from '../utils/saveToken';
+// import saveToken from '../utils/saveToken';
+import { AuthContext } from '../context/AuthContext';
 
 const SigninScreen = () => {
   const navigation = useNavigation<any>();
+  const { login } = useContext(AuthContext);
 
   const [user, setUser] = useState({
     email: '',
@@ -40,13 +42,19 @@ const SigninScreen = () => {
         user,
       );
 
+      // if (response.data.token) {
+      //   await saveToken(response.data.token);
+      // }
+
+      
       if (response.data.token) {
-        await saveToken(response.data.token);
+        await login(response.data.token); // ✅ THIS IS KEY
       }
+
 
       Alert.alert('success', 'Signin successful');
       setUser({ email: '', password: '' });
-      navigation.navigate('Main');
+      // navigation.navigate('Main');
     } catch (error) {
       Alert.alert('Error', 'Signup failed');
       console.error(error);

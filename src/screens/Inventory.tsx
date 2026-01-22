@@ -3,8 +3,10 @@ import {
   FlatList,
   Image,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -31,8 +33,9 @@ const categories = [
 ];
 
 const Inventory = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [products, setProducts] = useState<Product[] | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -57,12 +60,23 @@ const Inventory = () => {
   }, []);
 
   const filteredProducts = useMemo(() => {
-    if (!selectedCategory) return products;
-    return products?.filter(p => p.category === selectedCategory);
-  }, [products, selectedCategory]);
+    return products.filter(product => {
+      const matchCategory =
+        !selectedCategory || product.category === selectedCategory;
+
+      const matchSearch =
+        !searchQuery.trim() ||
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return matchCategory && matchSearch;
+    });
+  }, [products, selectedCategory, searchQuery]);
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <StatusBar barStyle="dark-content" />
+
       <SafeAreaView style={styles.header}>
         <View style={styles.brandRow}>
           <Text style={styles.headerTitle}>Inventory</Text>
@@ -87,7 +101,13 @@ const Inventory = () => {
             color="#000000a3"
             onPress={() => setIsVisible(prev => !prev)}
           />
-          <Text style={styles.searchText}>Search for products...</Text>
+          <TextInput
+            style={styles.searchText}
+            placeholder="Search for products"
+            placeholderTextColor="#00000061"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
         </View>
       )}
 
@@ -123,7 +143,12 @@ const Inventory = () => {
       <View style={styles.gridContainer}>
         {filteredProducts?.map(product => (
           <View key={product?.id} style={styles.productCard}>
-            <EvilIcons name="heart" size={22} color="#000000a3" style={styles.like}/>
+            <EvilIcons
+              name="heart"
+              size={22}
+              color="#000000a3"
+              style={styles.like}
+            />
             <View style={styles.productImageContainer}>
               <Image
                 style={styles.productImage}
@@ -145,6 +170,7 @@ const Inventory = () => {
           </View>
         ))}
       </View>
+      <View style={styles.extraSpace} />
     </ScrollView>
   );
 };
@@ -263,14 +289,15 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   searchContainer: {
-    borderRadius: 30,
+    borderRadius: 50,
     borderWidth: 1,
     borderColor: '#ffe3d9',
     backgroundColor: '#ffffff',
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 14,
-    padding: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     gap: 10,
     marginBottom: 20,
   },
@@ -283,5 +310,8 @@ const styles = StyleSheet.create({
     top: 6,
     left: 6,
     zIndex: 999,
+  },
+  extraSpace: {
+    paddingBottom: 150,
   },
 });

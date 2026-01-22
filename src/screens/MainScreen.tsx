@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   Image,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -62,6 +63,8 @@ const MainScreen = () => {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <StatusBar barStyle="dark-content" />
+
       <SafeAreaView style={styles.header}>
         <View style={styles.brandRow}>
           <Icon name="cart-shopping" color={'black'} size={24} />
