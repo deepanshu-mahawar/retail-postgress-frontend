@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   FlatList,
   Image,
+  Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -18,6 +19,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { Product } from '../types/type';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 const categories = [
   { label: 'All', value: '' },
@@ -37,6 +39,7 @@ const Inventory = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isVisible, setIsVisible] = useState(false);
+  const navigation = useNavigation<any>();
 
   useEffect(() => {
     const getProducts = async () => {
@@ -142,7 +145,13 @@ const Inventory = () => {
 
       <View style={styles.gridContainer}>
         {filteredProducts?.map(product => (
-          <View key={product?.id} style={styles.productCard}>
+          <Pressable
+            key={product?.id}
+            style={styles.productCard}
+            onPress={() =>
+              navigation.navigate('ProductDetail', { id: product.id })
+            }
+          >
             <EvilIcons
               name="heart"
               size={22}
@@ -167,7 +176,7 @@ const Inventory = () => {
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          </Pressable>
         ))}
       </View>
       <View style={styles.extraSpace} />

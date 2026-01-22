@@ -60,7 +60,7 @@ const SignupScreen = () => {
         Join Retail Pro to manage your business efficiently.
       </Text>
 
-      <View style={styles.inputContainer}>
+      <View style={styles.inputContainer} >
         <Text style={styles.label}>Full Name</Text>
         <View style={styles.inputWrapper}>
           <Icon name="person" size={20} color="#00000061" style={styles.icon} />

@@ -9,7 +9,7 @@ import BottomTabNavigator from './BottomTabNavigator';
 import Product from '../screens/Product';
 import Sell from '../screens/Sell';
 import Inventory from '../screens/Inventory';
-
+import ProductDetail from '../screens/ProductDetail';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,12 +28,12 @@ export default function ProtectedNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {isAuthenticated ? (
         <>
-          {/* <Stack.Screen name="Main" component={MainScreen} /> */}
           <Stack.Screen name="Main" component={BottomTabNavigator} />
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="Inventory" component={Inventory} />
           <Stack.Screen name="Sell" component={Sell} />
           <Stack.Screen name="Product" component={Product} />
+          <Stack.Screen name='ProductDetail' component={ProductDetail}/>
         </>
       ) : (
         <Stack.Screen name="Login" component={SigninScreen} />
