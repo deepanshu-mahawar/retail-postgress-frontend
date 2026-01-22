@@ -423,8 +423,8 @@ const styles = StyleSheet.create({
     height: 24,
   },
   profile: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     backgroundColor: '#ff5b27',
     borderRadius: 30,
     justifyContent: 'center',
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     elevation: 12,
   },
   profileText: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Poppins_Regular',
     color: '#ffffff',
   },
