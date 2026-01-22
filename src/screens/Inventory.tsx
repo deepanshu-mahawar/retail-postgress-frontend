@@ -219,12 +219,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ffe3d9',
     gap: 10,
-    marginTop: 10,
+    marginTop: 16,
     position: 'relative',
   },
   productImageContainer: {
     alignItems: 'center',
-    backgroundColor: 'red',
     borderRadius: 10,
   },
   productImage: {
@@ -259,7 +258,7 @@ const styles = StyleSheet.create({
     color: '#ff5b27',
   },
   addButton: {
-    backgroundColor: '#ffe3d9',
+    backgroundColor: '#FFF5F0',
     padding: 10,
     borderRadius: 30,
   },
@@ -283,6 +282,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 6,
     left: 6,
-    zIndex: 999
-  }
+    zIndex: 999,
+  },
 });

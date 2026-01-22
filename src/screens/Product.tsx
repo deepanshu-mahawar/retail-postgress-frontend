@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Poppins-Regular',
   },
   button: {
@@ -325,7 +325,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginTop: 16,
     marginBottom: 16,
-    padding: 10,
+    paddingVertical: 26,
+    paddingHorizontal: 10,
     borderRadius: 14,
     alignItems: 'center',
     borderWidth: 1,
@@ -340,7 +341,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#000000a3',
     textAlign: 'center',
-    marginTop: 6,
+    marginTop: 0,
+    fontFamily: 'Poppins-Regular',
   },
   primaryBtn: {
     marginTop: 20,
@@ -366,7 +368,7 @@ const styles = StyleSheet.create({
 
   textArea: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Poppins-Regular',
   },
   categoryRow: {

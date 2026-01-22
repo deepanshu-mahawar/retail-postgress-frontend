@@ -48,8 +48,10 @@ const MainScreen = () => {
           },
         );
 
-        setProducts(response.data.data);
-        console.log('response', response.data.data);
+        const latestFive = response.data.data.slice(-5).reverse();
+
+        setProducts(latestFive);
+        console.log('response', latestFive);
       } catch (error) {
         console.log('Fetch products failed', error);
       }
@@ -61,7 +63,6 @@ const MainScreen = () => {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* <StatusBar backgroundColor={'#FFF5F0'} barStyle="dark-content" /> */}
       <SafeAreaView style={styles.header}>
         <View style={styles.brandRow}>
           <Icon name="cart-shopping" color={'black'} size={24} />
@@ -124,68 +125,72 @@ const MainScreen = () => {
 
       <View style={styles.sectionRow}>
         <Text style={styles.sectionTitle}>Top products</Text>
-        <Text style={styles.link}>View all</Text>
+        <Text style={styles.link} onPress={() => navigation.navigate('Inventory')}>
+          View all
+        </Text>
       </View>
 
       {products?.map(product => (
         <View key={product?.id} style={styles.productRow}>
-          {product.category === 'grocery' ? (
-            <Image
-              source={require('../assets/icons/grocery.png')}
-              style={styles.categoryImage}
-            />
-          ) : product.category === 'fresh' ? (
-            <Image
-              source={require('../assets/icons/fresh-produce.png')}
-              style={styles.categoryImage}
-            />
-          ) : product.category === 'personal' ? (
-            <Image
-              source={require('../assets/icons/personal-hygiene.png')}
-              style={styles.categoryImage}
-            />
-          ) : product.category === 'home' ? (
-            <Image
-              source={require('../assets/icons/home.png')}
-              style={styles.categoryImage}
-            />
-          ) : product.category === 'baby' ? (
-            <Image
-              source={require('../assets/icons/baby.png')}
-              style={styles.categoryImage}
-            />
-          ) : product.category === 'health' ? (
-            <Image
-              source={require('../assets/icons/healthcare.png')}
-              style={styles.categoryImage}
-            />
-          ) : product.category === 'fashion' ? (
-            <Image
-              source={require('../assets/icons/tshirt.png')}
-              style={styles.categoryImage}
-            />
-          ) : product.category === 'electronic' ? (
-            <Image
-              source={require('../assets/icons/responsive.png')}
-              style={styles.categoryImage}
-            />
-          ) : product.category === 'stationery' ? (
-            <Image
-              source={require('../assets/icons/stationery.png')}
-              style={styles.categoryImage}
-            />
-          ) : (
-            <Ionicons name="cube-outline" size={26} color={'#ff5b27'} />
-          )}
+          <View style={styles.productIcon}>
+            {product.category === 'grocery' ? (
+              <Image
+                source={require('../assets/icons/grocery.png')}
+                style={styles.categoryImage}
+              />
+            ) : product.category === 'fresh' ? (
+              <Image
+                source={require('../assets/icons/fresh-produce.png')}
+                style={styles.categoryImage}
+              />
+            ) : product.category === 'personal' ? (
+              <Image
+                source={require('../assets/icons/personal-hygiene.png')}
+                style={styles.categoryImage}
+              />
+            ) : product.category === 'home' ? (
+              <Image
+                source={require('../assets/icons/home.png')}
+                style={styles.categoryImage}
+              />
+            ) : product.category === 'baby' ? (
+              <Image
+                source={require('../assets/icons/baby.png')}
+                style={styles.categoryImage}
+              />
+            ) : product.category === 'health' ? (
+              <Image
+                source={require('../assets/icons/healthcare.png')}
+                style={styles.categoryImage}
+              />
+            ) : product.category === 'fashion' ? (
+              <Image
+                source={require('../assets/icons/tshirt.png')}
+                style={styles.categoryImage}
+              />
+            ) : product.category === 'electronic' ? (
+              <Image
+                source={require('../assets/icons/responsive.png')}
+                style={styles.categoryImage}
+              />
+            ) : product.category === 'stationery' ? (
+              <Image
+                source={require('../assets/icons/stationery.png')}
+                style={styles.categoryImage}
+              />
+            ) : (
+              <Ionicons name="cube-outline" size={26} color={'#ff5b27'} />
+            )}
+          </View>
 
           <View style={styles.productCard}>
             <Text style={styles.productName}>{product.name}</Text>
-            <Text style={styles.productMeta}>
-              {product.stock} · {product.category}
-            </Text>
+            <Text style={styles.productMeta}>{product.category}</Text>
           </View>
 
-          <Text style={styles.stockText}>{product.stock} in stock</Text>
+          <View style={styles.stockBadge}>
+            <Text style={styles.stockText}>{product.stock} in stock</Text>
+          </View>
         </View>
       ))}
 
@@ -355,12 +360,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     marginHorizontal: 16,
-    marginTop: 10,
-    padding: 14,
+    marginBottom: 10,
+    padding: 8,
     borderRadius: 10,
     gap: 12,
     borderColor: '#ffe3d9',
     borderWidth: 1,
+    position: 'relative',
+  },
+  productIcon: {
+    backgroundColor: '#FFF5F0',
+    padding: 14,
+    borderRadius: 10,
   },
   productName: {
     color: '#000000',
@@ -368,14 +379,25 @@ const styles = StyleSheet.create({
   },
   productMeta: {
     fontSize: 12,
+    marginTop: -4,
     color: '#000000a3',
-    marginTop: 2,
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Poppins-Regular',
+  },
+  stockBadge: {
+    backgroundColor: '#DCFCE7',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
   },
   stockText: {
-    fontSize: 12,
+    fontSize: 10,
     fontFamily: 'Poppins-SemiBold',
-    color: '#000000a3',
+    color: '#166534',
   },
   activityCard: {
     backgroundColor: '#fff',
