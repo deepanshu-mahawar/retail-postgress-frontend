@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import {
   Image,
   ScrollView,
-  // StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -125,7 +124,10 @@ const MainScreen = () => {
 
       <View style={styles.sectionRow}>
         <Text style={styles.sectionTitle}>Top products</Text>
-        <Text style={styles.link} onPress={() => navigation.navigate('Inventory')}>
+        <Text
+          style={styles.link}
+          onPress={() => navigation.navigate('Inventory')}
+        >
           View all
         </Text>
       </View>
