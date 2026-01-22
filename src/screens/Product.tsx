@@ -75,7 +75,6 @@ const Product = () => {
       name: product.image.fileName || 'product.jpg',
     } as any);
 
-
     try {
       const token = await AsyncStorage.getItem('authToken');
 
@@ -91,7 +90,9 @@ const Product = () => {
       );
       console.log('Product created successfully');
       Alert.alert('Success', 'Product created successfully');
-      navigation.navigate('Inventory');
+      setTimeout(() => {
+        navigation.navigate('Inventory');
+      }, 3000);
     } catch (error) {
       console.error('Product creation failed', error);
     }
