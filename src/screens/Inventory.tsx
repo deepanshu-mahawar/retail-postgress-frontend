@@ -1,5 +1,4 @@
-// import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -11,6 +10,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+
 import { Product } from '../types/type';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -30,10 +32,8 @@ const categories = [
 
 const Inventory = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
-
   const [products, setProducts] = useState<Product[] | null>(null);
-
-  // const navigation = useNavigation<any>();
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -55,6 +55,12 @@ const Inventory = () => {
 
     getProducts();
   }, []);
+
+  const filteredProducts = useMemo(() => {
+    if (!selectedCategory) return products;
+    return products?.filter(p => p.category === selectedCategory);
+  }, [products, selectedCategory]);
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <SafeAreaView style={styles.header}>
@@ -63,10 +69,27 @@ const Inventory = () => {
         </View>
 
         <View style={styles.headerRight}>
-          <Feather name="search" size={22} color="#000000a3" />
-          <Feather name="shopping-cart" size={24} color="#ff5b27" />
+          <Feather
+            name="search"
+            size={22}
+            color="#000000a3"
+            onPress={() => setIsVisible(prev => !prev)}
+          />
+          <Ionicons name="cart-outline" size={26} color="#ff5b27" />
         </View>
       </SafeAreaView>
+
+      {isVisible && (
+        <View style={styles.searchContainer}>
+          <Feather
+            name="search"
+            size={22}
+            color="#000000a3"
+            onPress={() => setIsVisible(prev => !prev)}
+          />
+          <Text style={styles.searchText}>Search for products...</Text>
+        </View>
+      )}
 
       <FlatList
         data={categories}
@@ -98,8 +121,9 @@ const Inventory = () => {
       />
 
       <View style={styles.gridContainer}>
-        {products?.map(product => (
+        {filteredProducts?.map(product => (
           <View key={product?.id} style={styles.productCard}>
+            <EvilIcons name="heart" size={22} color="#000000a3" style={styles.like}/>
             <View style={styles.productImageContainer}>
               <Image
                 style={styles.productImage}
@@ -114,7 +138,7 @@ const Inventory = () => {
               <View style={styles.productSubContainer}>
                 <Text style={styles.productPrice}>₹{product.price}</Text>
                 <TouchableOpacity style={styles.addButton}>
-                  <Feather name="plus" size={20} color="#ff5b27" />
+                  <Ionicons name="cart-outline" size={20} color="#ff5b27" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -136,7 +160,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     marginTop: 14,
   },
   brandRow: {
@@ -156,10 +180,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   categoryList: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
   },
   categoryChip: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
     paddingVertical: 10,
     backgroundColor: '#ffffff',
     borderRadius: 24,
@@ -183,7 +207,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     marginTop: 20,
   },
   productCard: {
@@ -195,29 +219,33 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ffe3d9',
     gap: 10,
+    marginTop: 10,
+    position: 'relative',
   },
   productImageContainer: {
     alignItems: 'center',
-    backgroundColor: '#ffe3d9',
+    backgroundColor: 'red',
     borderRadius: 10,
   },
   productImage: {
     width: '100%',
-    height: 120,
-    resizeMode: 'cover',
+    height: 168,
+    resizeMode: 'center',
     borderRadius: 10,
   },
-  productContentContainer: {},
+  productContentContainer: {
+    flexDirection: 'column',
+  },
   productName: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Poppins-SemiBold',
     color: '#ff5b27',
   },
   productcategory: {
-    fontSize: 12,
-    fontFamily: 'Poppins-Regular',
+    fontSize: 10,
+    fontFamily: 'Poppins-SemiBold',
     color: '#000000a3',
-    marginTop: -4,
+    marginTop: -2,
   },
   productSubContainer: {
     flexDirection: 'row',
@@ -226,13 +254,35 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   productPrice: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: 'Poppins-SemiBold',
     color: '#ff5b27',
   },
   addButton: {
     backgroundColor: '#ffe3d9',
-    padding: 8,
+    padding: 10,
     borderRadius: 30,
   },
+  searchContainer: {
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: '#ffe3d9',
+    backgroundColor: '#ffffff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 14,
+    padding: 14,
+    gap: 10,
+    marginBottom: 20,
+  },
+  searchText: {
+    fontFamily: 'Poppins-Regular',
+    color: '#000000a3',
+  },
+  like: {
+    position: 'absolute',
+    top: 6,
+    left: 6,
+    zIndex: 999
+  }
 });
