@@ -2,6 +2,10 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MainScreen from '../screens/MainScreen';
 import CustomTabBar from '../components/CustomTabBar';
+import Inventory from '../screens/Inventory';
+import Product from '../screens/Product';
+import Sell from '../screens/Sell';
+import profile from '../screens/Profile';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,10 +16,10 @@ const BottomTabNavigator = () => {
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="Home" component={MainScreen} />
-      <Tab.Screen name="Inventory" component={MainScreen} />
-      <Tab.Screen name="Center" component={MainScreen} />
-      <Tab.Screen name="Sell" component={MainScreen} />
-      <Tab.Screen name="Profile" component={MainScreen} />
+      <Tab.Screen name="Inventory" component={Inventory} />
+      <Tab.Screen name="Center" component={Product} />
+      <Tab.Screen name="Sell" component={Sell} />
+      <Tab.Screen name="Profile" component={profile} />
     </Tab.Navigator>
   );
 };
